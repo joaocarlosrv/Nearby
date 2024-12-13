@@ -9,7 +9,7 @@ val mockCategories = listOf(
     ),
     Category(
         id = "2",
-        name = "Cinema"
+        name = "Entretenimento"
     ),
     Category(
         id = "3",
