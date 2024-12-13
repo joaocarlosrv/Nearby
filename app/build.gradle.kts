@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.maps.compose)
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     implementation(platform(libs.ktor.bom))
     implementation(libs.bundles.ktor)

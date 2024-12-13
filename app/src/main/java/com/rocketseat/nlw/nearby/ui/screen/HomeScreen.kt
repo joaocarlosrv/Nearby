@@ -9,6 +9,7 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,15 +25,26 @@ import com.rocketseat.nlw.nearby.data.model.mock.mockCategories
 import com.rocketseat.nlw.nearby.data.model.mock.mockMarkets
 import com.rocketseat.nlw.nearby.ui.component.category.NearbyCategoryFilterChipList
 import com.rocketseat.nlw.nearby.ui.component.market.NearbyMarketCardList
+import com.rocketseat.nlw.nearby.ui.screen.HomeUiEvent
 import com.rocketseat.nlw.nearby.ui.theme.Gray100
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, onNavigateToMarketDetails: (Market) -> Unit) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    uiState: HomeUiState,
+    onEvent: (HomeUiEvent) -> Unit,
+    onNavigateToMarketDetails: (Market) -> Unit
+) {
     val bottomSheetState = rememberBottomSheetScaffoldState()
     var isBottomSheetOpened by remember { mutableStateOf(true) }
 
     val configuration = LocalConfiguration.current
+
+    LaunchedEffect(true) {
+        onEvent(HomeUiEvent.OnFetchCategories)
+
+    }
 
     if (isBottomSheetOpened) {
         BottomSheetScaffold(
@@ -42,35 +54,39 @@ fun HomeScreen(modifier: Modifier = Modifier, onNavigateToMarketDetails: (Market
             sheetPeekHeight = configuration.screenHeightDp.dp * 0.5f,
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             sheetContent = {
-                NearbyMarketCardList(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    markets = mockMarkets,
-                    onMarketClick = { selectedMarket ->
-                        onNavigateToMarketDetails(selectedMarket)
-                    }
-                )
+                if (!uiState.markets.isNullOrEmpty())
+                    NearbyMarketCardList(
+                        modifier = modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        markets = uiState.markets,
+                        onMarketClick = { selectedMarket ->
+                            onNavigateToMarketDetails(selectedMarket)
+                        }
+                    )
             },
             content = {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = it.calculateBottomPadding().minus(8.dp))
+                ) {
                     GoogleMap(
                         modifier = Modifier.fillMaxSize()
                     )
-                    NearbyCategoryFilterChipList(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 24.dp)
-                            .align(Alignment.TopStart),
-                        categories = mockCategories,
-                        onSelectedCategoryChanged = {
+                    if (!uiState.categories.isNullOrEmpty())
+                        NearbyCategoryFilterChipList(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 24.dp)
+                                .align(Alignment.TopStart),
+                            categories = uiState.categories,
+                            onSelectedCategoryChanged = { selectedCategory ->
+                                onEvent(HomeUiEvent.OnFetchMarkets(categoryId = selectedCategory.id))
 
-                        }
-                    )
+                            }
+                        )
                 }
-
             }
         )
     }
@@ -79,5 +95,5 @@ fun HomeScreen(modifier: Modifier = Modifier, onNavigateToMarketDetails: (Market
 @Preview
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen(onNavigateToMarketDetails = {})
+    HomeScreen(onNavigateToMarketDetails = {}, uiState = HomeUiState(), onEvent = {})
 }
