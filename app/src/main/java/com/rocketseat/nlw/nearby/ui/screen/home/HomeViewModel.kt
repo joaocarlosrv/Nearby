@@ -1,8 +1,7 @@
-package com.rocketseat.nlw.nearby.ui.screen
+package com.rocketseat.nlw.nearby.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.LatLng
 import com.rocketseat.nlw.nearby.core.network.NearbyRemoteDataSource
 import kotlinx.coroutines.flow.MutableStateFlow

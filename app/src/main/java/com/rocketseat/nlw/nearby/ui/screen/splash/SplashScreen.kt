@@ -1,4 +1,4 @@
-package com.rocketseat.nlw.nearby.ui.screen
+package com.rocketseat.nlw.nearby.ui.screen.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.rocketseat.nlw.nearby.R
